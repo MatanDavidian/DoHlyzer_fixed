@@ -22,8 +22,8 @@ class PacketTime:
         """
         if self.packet_times is not None:
             return self.packet_times
-        first_packet_time = self.flow.packets[0][0].time
-        packet_times = [packet.time - first_packet_time for packet, _ in self.flow.packets]
+        first_packet_time = float(self.flow.packets[0][0].time)
+        packet_times = [float(packet.time) - first_packet_time for packet, _ in self.flow.packets]
         return packet_times
 
     def relative_time_list(self):
@@ -90,7 +90,6 @@ class PacketTime:
         mean = 0
         if self._get_packet_times() != 0:
             mean = numpy.mean(self._get_packet_times())
-
         return mean
 
     def get_median(self):
