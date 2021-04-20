@@ -5,10 +5,10 @@ from collections import defaultdict
 from scapy.layers.tls.record import TLS, TLSApplicationData
 from scapy.sessions import DefaultSession
 
-from meter.features.context.packet_direction import PacketDirection
-from meter.features.context.packet_flow_key import get_packet_flow_key
-from meter.flow import Flow
-from meter.time_series.processor import Processor
+from features.context.packet_direction import PacketDirection
+from features.context.packet_flow_key import get_packet_flow_key
+from flow import Flow
+from time_series.processor import Processor
 
 EXPIRED_UPDATE = 40
 
@@ -28,7 +28,7 @@ class FlowSession(DefaultSession):
 
         self.clumped_flows_per_label = defaultdict(list)
 
-        super(FlowSession, self).__init__(None, True, *args, **kwargs)
+        super(FlowSession, self).__init__(*args, **kwargs) # None, True,
 
     def toPacketList(self):
         # Sniffer finished all the packets it needed to sniff.
@@ -111,7 +111,7 @@ class FlowSession(DefaultSession):
         # TODO: Garbage Collection / Feature Extraction should have a separate thread
         print('Garbage Collection Began. Flows = {}'.format(len(self.flows)))
         keys = list(self.flows.keys())
-        for k in keys:
+        for k in keys[:-1]:
             flow = self.flows.get(k)
 
             if self.output_mode == 'flow':
