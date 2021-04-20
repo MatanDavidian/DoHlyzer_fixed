@@ -2,10 +2,10 @@
 
 import argparse
 
-from scapy.all import load_layer
+from scapy.all import *
 from scapy.sendrecv import AsyncSniffer
 
-from meter.flow_session import generate_session_class
+from flow_session import generate_session_class
 
 
 def create_sniffer(input_file, input_interface, output_mode, output_file):
@@ -14,7 +14,11 @@ def create_sniffer(input_file, input_interface, output_mode, output_file):
     NewFlowSession = generate_session_class(output_mode, output_file)
 
     if input_file is not None:
-        return AsyncSniffer(offline=input_file, filter='tcp port 443', prn=None, session=NewFlowSession, store=False)
+        try:
+            return sniff(offline=input_file, prn=None, session=NewFlowSession, store=False) # , filter='tcp port 443'
+        except:
+            pass
+        # return AsyncSniffer(offline=input_file, filter='tcp port 443', prn=None, session=NewFlowSession, store=False)
     else:
         return AsyncSniffer(iface=input_interface, filter='tcp port 443', prn=None,
                             session=NewFlowSession, store=False)
@@ -41,15 +45,22 @@ def main():
     load_layer('tls')
 
     sniffer = create_sniffer(args.input_file, args.input_interface, args.output_mode, args.output)
-    sniffer.start()
-
+    #sniffer.start()
+    '''
     try:
         sniffer.join()
     except KeyboardInterrupt:
         sniffer.stop()
     finally:
         sniffer.join()
-
+    '''
 
 if __name__ == '__main__':
     main()
+    '''
+    try:
+        main()
+    except e:
+        print(e)
+    print("finish")
+    '''
